@@ -22,6 +22,7 @@ function Scene() {
     outlineMesh.visible = false; // Initially not visible
     scene.add(outlineMesh);
     outlineMeshRef.current = outlineMesh;
+    
 
     const dragControls = new DragControls(interactableObjects.current, camera, gl.domElement);
     dragControlsRef.current = dragControls;
@@ -51,17 +52,21 @@ function Scene() {
       dragControls.dispose();
     };
   }, [camera, gl.domElement, scene]);
-  const logHierarchy = (object,indent='')=>{
+
+  const logHierarchy = (object, indent = '') => {
     let content = '';
-    if(object.name!=='grid'&&object.name!=='')
-        content += indent + object.name + '<br>'; // Use <br> for line breaks in HTML
-        for (let i = 0; i < object.children.length; i++) {
-            content += logHierarchy(object.children[i], indent + '    '); // Use non-breaking spaces for indentation in HTML
-        }
-        return content;
-  }
+    if (object.name !== 'grid' && object.name !== '') {
+      content += indent + object.name + '<br>'; // Use <br> for line breaks in HTML
+    }
+    for (let i = 0; i < object.children.length; i++) {
+      content += logHierarchy(object.children[i], indent + '    '); // Use non-breaking spaces for indentation in HTML
+    }
+    return content;
+  };
+
   const hierarchy = logHierarchy(scene);
   console.log(hierarchy);
+
   const handlePointerDown = (event) => {
     const coords = new THREE.Vector2(
       (event.clientX / window.innerWidth) * 2 - 1,
@@ -69,17 +74,22 @@ function Scene() {
     );
     raycaster.setFromCamera(coords, camera);
     const intersects = raycaster.intersectObjects(interactableObjects.current, true);
+  
     if (intersects.length > 0) {
       const obj = intersects[0].object;
-      if (obj.name !== 'grid' && obj.name !== 'plane') {
+      if (obj.name !== 'plane') {
         const outlineMesh = outlineMeshRef.current;
         outlineMesh.position.copy(obj.position);
         outlineMesh.rotation.copy(obj.rotation);
+        outlineMesh.scale.copy(obj.scale).multiplyScalar(1.05);
         outlineMesh.visible = true;
         outlineMesh.userData.lastOutlined = obj;
       }
+    } else {
+      outlineMeshRef.current.visible = false; // Hide the outline if no interactable object is clicked
     }
   };
+  
 
   return (
     <>
@@ -121,7 +131,6 @@ function Scene() {
         rotation={[-Math.PI / 2, 0, 0]}
         receiveShadow
         name="plane"
-        ref={(mesh) => mesh && interactableObjects.current.push(mesh)}
       >
         <planeGeometry args={[100, 100]} />
         <meshPhongMaterial color={0xffffff} side={THREE.DoubleSide} />
@@ -139,7 +148,7 @@ function Scene() {
 export default function App() {
   return (
     <Canvas camera={{ position: [2, 2, 2] }} style={{ backgroundColor: 'grey' }}>
-        <Scene />
+      <Scene />
     </Canvas>
   );
 }
