@@ -16,12 +16,6 @@ function Scene() {
   useEffect(() => {
     const outlineColor = 0xffff00; // Yellow for the outline
     const outlineMaterial = new THREE.MeshBasicMaterial({ color: outlineColor, side: THREE.BackSide });
-    // const geometry = new THREE.BoxGeometry(1, 1, 1);
-    // const outlineMesh = new THREE.Mesh(geometry, outlineMaterial);
-    // outlineMesh.scale.multiplyScalar(1.05);
-    // outlineMesh.visible = false; // Initially not visible
-    // //scene.add(outlineMesh);
-    // outlineMeshRef.current = outlineMesh;
     
     const dragControls = new DragControls(interactableObjects.current, camera, gl.domElement);
     dragControlsRef.current = dragControls;    
@@ -173,10 +167,6 @@ useFrame(() => {
         <meshPhongMaterial color={0xffffff} side={THREE.DoubleSide} />
       </mesh>
       <OrbitControls ref={controlsRef} enableDamping />
-      <mesh ref={outlineMeshRef}>
-        <boxGeometry />
-        <meshBasicMaterial color={0xffff00} side={THREE.BackSide} />
-      </mesh>
       <mesh onPointerDown={handlePointerDown} />
     </>
   );
