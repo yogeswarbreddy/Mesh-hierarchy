@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import MovableWindow from './MovableWindow';
 import './App.css';
 
 function Scene() {
@@ -174,8 +175,11 @@ useFrame(() => {
 
 export default function App() {
   return (
-    <Canvas camera={{ position: [2, 2, 2] }} style={{ backgroundColor: 'grey' }}>
-      <Scene />
-    </Canvas>
+    <>
+      <Canvas camera={{ position: [2, 2, 2] }} style={{ backgroundColor: 'grey' }}>
+        <Scene />
+      </Canvas>
+      <MovableWindow />
+    </>
   );
 }
